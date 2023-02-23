@@ -1,0 +1,17 @@
+version: '3'
+services:
+  health:
+    image: opendx/gnu_health
+    build:
+      context: .
+
+  postgres:
+    image: postgres:15.2-alpine
+    environment:
+      - POSTGRES_USER=gnuhealth
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - PGDATA=/var/lib/postgresql/data/
+    volumes:
+      - ${VOLUMES_BASE_PATH:-./volumes}/pg:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
