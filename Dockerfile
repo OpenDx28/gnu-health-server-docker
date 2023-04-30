@@ -27,12 +27,16 @@ RUN apt-get update && \
     unoconv \
     libpq-dev \
     libpng-dev \
-    libjpeg8-dev
+    libjpeg8-dev \
+    expect
 
 # NODE (for Tryton SAO)
 RUN apt-get install -y apt-utils
 RUN curl -sL https://deb.nodesource.com/setup_19.x | bash -
 RUN apt-get install -y nodejs
+
+# uWSGI (for an improved web server)
+RUN pip install uwsgi
 
 # 3.2 Setting up NTP
 
@@ -64,14 +68,22 @@ RUN ./gnuhealth-setup install && \
 RUN cd /home/gnuhealth && \
     wget -qO- https://hg.tryton.org/sao/archive/6.6.1.tar.gz | tar -xzvf - && \
     mv sao-6.6.1 sao && \
-    cd sao && \
-    npm install --production --legacy-peer-deps
+    cd sao #&& \
+    #npm install --production --legacy-peer-deps
+# TODO Previous line Disabled!!! (no web GUI!)
+
+ENV DB_NAME=ghs
+ENV DB_USER=gnuhealth
+ENV DB_PASSWORD=gnuhealth
+ENV DB_HOST=postgres
 
 # Make the last a volume
-COPY trytond.conf /home/gnuhealth/tryton/server/config/trytond.conf
-COPY start.sh /home/gnuhealth/start.sh
+COPY --chown=gnuhealth:gnuhealth trytond.conf /home/gnuhealth/gnuhealth/tryton/server/config
+# PREVIOUS CHECK: ensure "start.sh" has execution permissions for "user" (chmod u+x start.sh)
+COPY --chown=gnuhealth:gnuhealth start.sh /home/gnuhealth/start.sh
 #COPY supervisord.conf /etc/supervisord.conf
 #CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 
-#CMD ["/home/gnuhealth/start.sh"]
-CMD ["sleep", "infinity"]
+ENV PGPASSWORD=gnuhealth
+CMD ["/bin/bash", "/home/gnuhealth/start.sh"]
+#CMD ["sleep", "infinity"]

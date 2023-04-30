@@ -1,15 +1,34 @@
 version: '3'
 services:
+  # docker run -d --name health --rm --link postgres -e DB_NAME=ghs2 -p 8000:8000 -p 8069:8069 opendx/gnu_health
   health:
     image: opendx/gnu_health
     build:
       context: .
+    links:
+      - postgres
+    ports:
+      - "8000:8000"
+      - "8069:8069"
 
+  # docker run -d --name postgres -e POSTGRES_USER=gnuhealth -e POSTGRES_PASSWORD=gnuhealth -p 5434:5432 postgres:15.2-alpine
   postgres:
     image: postgres:15.2-alpine
     environment:
       - POSTGRES_USER=gnuhealth
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=gnuhealth
+      - PGDATA=/var/lib/postgresql/data/
+    volumes:
+      - ${VOLUMES_BASE_PATH:-./volumes}/pg:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+  # docker run -d --name thalamus_postgres -e POSTGRES_USER=thalamus -e POSTGRES_PASSWORD=thalamus -p 5435:5432 postgres:15.2-alpine
+  thalamus_postgres:
+    image: postgres:15.2-alpine
+    environment:
+      - POSTGRES_USER=thalamus
+      - POSTGRES_PASSWORD=thalamus
       - PGDATA=/var/lib/postgresql/data/
     volumes:
       - ${VOLUMES_BASE_PATH:-./volumes}/pg:/var/lib/postgresql/data
