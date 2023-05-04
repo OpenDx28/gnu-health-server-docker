@@ -68,19 +68,21 @@ RUN ./gnuhealth-setup install && \
 RUN cd /home/gnuhealth && \
     wget -qO- https://hg.tryton.org/sao/archive/6.6.1.tar.gz | tar -xzvf - && \
     mv sao-6.6.1 sao && \
-    cd sao #&& \
-    #npm install --production --legacy-peer-deps
-# TODO Previous line Disabled!!! (no web GUI!)
+    cd sao
+    # && npm install --production --legacy-peer-deps
+# TODO Previous line Disabled!!! (no web GUI!. Use Python Client. The command "npm" stopped working)
 
 ENV DB_NAME=ghs
 ENV DB_USER=gnuhealth
 ENV DB_PASSWORD=gnuhealth
 ENV DB_HOST=postgres
+ENV ADMIN_PASSWORD=opendx28
 
 # Make the last a volume
 COPY --chown=gnuhealth:gnuhealth trytond.conf /home/gnuhealth/gnuhealth/tryton/server/config
 # PREVIOUS CHECK: ensure "start.sh" has execution permissions for "user" (chmod u+x start.sh)
 COPY --chown=gnuhealth:gnuhealth start.sh /home/gnuhealth/start.sh
+COPY --chown=gnuhealth:gnuhealth set_admin_password.exp /home/gnuhealth/set_admin_password.exp
 #COPY supervisord.conf /etc/supervisord.conf
 #CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 
