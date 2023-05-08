@@ -41,7 +41,8 @@ RUN pip install uwsgi
 # 3.2 Setting up NTP
 
 # 3.3 Create OS user
-RUN adduser gnuhealth
+#RUN adduser gnuhealth
+RUN groupadd -r -g 10001 gnuhealth && useradd -r -u 10001 -g gnuhealth -m -s /bin/bash -c "GNU Health" gnuhealth
 
 # 3.4 Verify Postgres authentication method (does not apply)
 # 3.5 Create database user (in the Docker Compose, PostgreSQL image)
@@ -87,8 +88,12 @@ COPY --chown=gnuhealth:gnuhealth trytond.conf /home/gnuhealth/gnuhealth/tryton/s
 # PREVIOUS CHECK: ensure "start.sh" has execution permissions for "user" (chmod u+x start.sh)
 COPY --chown=gnuhealth:gnuhealth start.sh /home/gnuhealth/start.sh
 COPY --chown=gnuhealth:gnuhealth set_admin_password.exp /home/gnuhealth/set_admin_password.exp
+
 #COPY supervisord.conf /etc/supervisord.conf
 #CMD ["supervisord", "-c", "/etc/supervisord.conf"]
+
+VOLUME /home/gnuhealth/gnuhealth/tryton/server/modules/local
+RUN chown -R gnuhealth:gnuhealth /home/gnuhealth/gnuhealth/tryton/server/modules/local
 
 ENV PGPASSWORD=gnuhealth
 CMD ["/bin/bash", "/home/gnuhealth/start.sh"]

@@ -13,9 +13,12 @@ services:
     ports:
       - "8000:8000"
       - "8069:8069"
+    volumes:
+      - ${VOLUMES_BASE_PATH:-./volumes}/ghs1_local:/home/gnuhealth/gnuhealth/tryton/server/modules/local
     depends_on:
       postgres:
         condition: service_healthy
+
 
   health_2:
     image: opendx/gnu_health
@@ -28,6 +31,8 @@ services:
     ports:
       - "8001:8000"
       - "8070:8069"
+    volumes:
+      - ${VOLUMES_BASE_PATH:-./volumes}/ghs2_local:/home/gnuhealth/gnuhealth/tryton/server/modules/local
     depends_on:
       postgres:
         condition: service_healthy
