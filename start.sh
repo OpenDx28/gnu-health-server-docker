@@ -12,11 +12,17 @@ createdb -h ${DB_HOST} -U gnuhealth -w ${DB_NAME}
 cdexe
 export EXE_PATH=`pwd`
 sed -i "s|^DB_URI.*|uri = postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/|" /home/gnuhealth/gnuhealth/tryton/server/config/trytond.conf
-python3 ./trytond-admin --all --database=${DB_NAME}
-# The first time, modify the admin password using expect
+#python3 ./trytond-admin --all --database=${DB_NAME}
+# The first time, load the demo database and modify the admin password using expect
 INIT_FILE="/home/gnuhealth/container_initialized"
 if [ ! -f "$INIT_FILE" ]; then
     echo "First-time container initialization..."
+    # Execute if the file demo.sql exists
+    if [ -f "/home/gnuhealth/demo.sql" ]; then
+        echo "Restoring demo database..."
+        PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USER -d $DB_NAME -f ~/demo.sql
+        rm -f ~/demo.sql
+    fi
     /home/gnuhealth/set_admin_password.exp
     touch "$INIT_FILE"
     echo "Container initialized."

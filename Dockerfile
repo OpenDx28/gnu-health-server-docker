@@ -72,6 +72,10 @@ RUN cd /home/gnuhealth && \
     # && npm install --production --legacy-peer-deps
 # TODO Previous line Disabled!!! (no web GUI!. Use Python Client. The command "npm" stopped working)
 
+RUN cd ~ && \
+    wget -qO- https://www.gnuhealth.org/downloads/postgres_dumps/gnuhealth-42-demo.sql.gz | gunzip > demo.sql && \
+    chown gnuhealth:gnuhealth demo.sql
+
 ENV DB_NAME=ghs
 ENV DB_USER=gnuhealth
 ENV DB_PASSWORD=gnuhealth

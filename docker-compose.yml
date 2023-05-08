@@ -13,6 +13,9 @@ services:
     ports:
       - "8000:8000"
       - "8069:8069"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   health_2:
     image: opendx/gnu_health
@@ -25,6 +28,9 @@ services:
     ports:
       - "8001:8000"
       - "8070:8069"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   # docker run -d --name postgres -e POSTGRES_USER=gnuhealth -e POSTGRES_PASSWORD=gnuhealth -p 5434:5432 postgres:15.2-alpine
   postgres:
@@ -37,6 +43,11 @@ services:
       - ${VOLUMES_BASE_PATH:-./volumes}/pg:/var/lib/postgresql/data
     ports:
       - "5434:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U gnuhealth -d gnuhealth" ]
+      interval: 1s
+      timeout: 3s
+      retries: 5
 
   # docker run -d --name thalamus_postgres -e POSTGRES_USER=thalamus -e POSTGRES_PASSWORD=thalamus -p 5435:5432 postgres:15.2-alpine
   thalamus_postgres:
