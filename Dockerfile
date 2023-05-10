@@ -36,7 +36,7 @@ RUN curl -sL https://deb.nodesource.com/setup_19.x | bash -
 RUN apt-get install -y nodejs
 
 # uWSGI (for an improved web server)
-RUN pip install uwsgi
+RUN pip install uwsgi "proteus>=6.0,<6.1" supervisor
 
 # 3.2 Setting up NTP
 
@@ -89,14 +89,14 @@ ENV DEMO_DB=1
 COPY --chown=gnuhealth:gnuhealth trytond.conf /home/gnuhealth/gnuhealth/tryton/server/config
 # PREVIOUS CHECK: ensure "start.sh" has execution permissions for "user" (chmod u+x start.sh)
 COPY --chown=gnuhealth:gnuhealth start.sh /home/gnuhealth/start.sh
+COPY --chown=gnuhealth:gnuhealth set_thalamus_config.py /home/gnuhealth/set_thalamus_config.py
 COPY --chown=gnuhealth:gnuhealth set_admin_password.exp /home/gnuhealth/set_admin_password.exp
-
-#COPY supervisord.conf /etc/supervisord.conf
-#CMD ["supervisord", "-c", "/etc/supervisord.conf"]
+COPY supervisord.conf /etc/supervisord.conf
 
 VOLUME /home/gnuhealth/gnuhealth/tryton/server/modules/local
 RUN chown -R gnuhealth:gnuhealth /home/gnuhealth/gnuhealth/tryton/server/modules/local
 
 ENV PGPASSWORD=gnuhealth
-CMD ["/bin/bash", "/home/gnuhealth/start.sh"]
+#CMD ["/bin/bash", "/home/gnuhealth/start.sh"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 #CMD ["sleep", "infinity"]
