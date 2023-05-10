@@ -82,6 +82,8 @@ ENV DB_USER=gnuhealth
 ENV DB_PASSWORD=gnuhealth
 ENV DB_HOST=postgres
 ENV ADMIN_PASSWORD=opendx28
+# IF defined it will use the demo database, if not it will create an empty one
+ENV DEMO_DB=1
 
 # Make the last a volume
 COPY --chown=gnuhealth:gnuhealth trytond.conf /home/gnuhealth/gnuhealth/tryton/server/config
