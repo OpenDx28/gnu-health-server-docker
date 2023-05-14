@@ -12,7 +12,7 @@ createdb -h ${DB_HOST} -U gnuhealth -w ${DB_NAME}
 cdexe
 export EXE_PATH=`pwd`
 sed -i "s|^DB_URI.*|uri = postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/|" /home/gnuhealth/gnuhealth/tryton/server/config/trytond.conf
-if [ "$DEMO_DB" = ""]; then
+if [ "$DEMO_DB" = "" ]; then
     python3 ./trytond-admin --all --database=${DB_NAME}
 fi
 
