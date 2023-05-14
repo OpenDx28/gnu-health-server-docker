@@ -28,6 +28,10 @@ RUN apt-get update && \
     libpq-dev \
     libpng-dev \
     libjpeg8-dev \
+    graphviz \
+    libreoffice-core \
+    default-jre \
+    libreoffice-java-common \
     expect
 
 # NODE (for Tryton SAO)
@@ -36,7 +40,10 @@ RUN curl -sL https://deb.nodesource.com/setup_19.x | bash -
 RUN apt-get install -y nodejs
 
 # uWSGI (for an improved web server)
-RUN pip install uwsgi "proteus>=6.0,<6.1" supervisor
+# supervisor for multiple processes, to initialize thalamus config
+# proteus, also to initialize thalamus config
+# pydot for graph of objects
+RUN pip install uwsgi "proteus>=6.0,<6.1" supervisor pydot
 
 # 3.2 Setting up NTP
 
