@@ -50,7 +50,7 @@ This project is licensed under the BSD 3-Clause License. See the [LICENSE](LICEN
 * Rafael Nebot Medina. ITC-DCCT (Instituto Tecnológico de Canarias - Departamento de Computación)
 * Paula Moreno Fajardo. ITC-DCCT
 * Luis Falcón. GNU Solidario.
-* Gerald Wiese. Hannover University - Medical School Hannover (MHH)
+* Gerald Wiese. Leibniz Hannover University
 
 ## Acknowledgements
 
